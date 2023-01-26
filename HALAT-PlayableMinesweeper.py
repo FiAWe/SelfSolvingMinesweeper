@@ -20,9 +20,9 @@ btnNumber = 0 #Variable to track which button has been clicked
 
 numOfClickedTiles = [0]*1
 
-my_str=StringVar()
-l1=Label(root,textvariable=my_str)
-l1.grid(row=0,column=0,columnspan=10)
+# my_str=StringVar()
+# l1=Label(root,textvariable=my_str)
+# l1.grid(row=0,column=0,columnspan=10)
 
 def FlagClick(event,x,y,index):
 	btnBox = btn[index]
@@ -43,6 +43,7 @@ def ChordClick(event,x,y,index):
 	
 	if isClickedList[index]==1 and btnBox.cget('text')!="B":
 		
+		# TODO: refactor so sum of array instead of if statements
 		#Check number of nearby flagged cells
 		#Check cell to the left
 		if x!=0 and isFlaggedList[index-1]==1:
@@ -164,27 +165,19 @@ def my_fun(event,x,y,index):
 			if x!=numOfCols-1 and y!=numOfRows-1 and recursiveCheckList[index+1+numOfCols]==0:
 				my_fun(event,x+1,y+1,index+1+numOfCols)
 	    
-	    #Set the font colour based on number of bombs nearby
-		if nearbyBombCount == 0:
-			btnBox.config(fg="#e9e9e9")
-		elif nearbyBombCount == 1:
-			btnBox.config(fg="blue")
-		elif nearbyBombCount == 2:
-			btnBox.config(fg="green")
-		elif nearbyBombCount == 3:
-			btnBox.config(fg="red")
-		elif nearbyBombCount == 4:
-			btnBox.config(fg="#9900ff")
-		elif nearbyBombCount == 5:
-			btnBox.config(fg="#660000")
-		elif nearbyBombCount == 6:
-			btnBox.config(fg="#4a86e8")
-		elif nearbyBombCount == 7:
-			btnBox.config(fg="black")
-		elif nearbyBombCount == 8:
-			btnBox.config(fg="#d9d9d9")
-		else: 
-			pass
+
+		count_colors = [
+			"#e9e9e9",
+			"blue",
+			"green",
+			"red",
+			"#9900ff",
+			"#660000",
+			"#4a86e8",
+			"black",
+			"#d9d9d9"
+		]
+		btnBox.config(fg=count_colors[nearbyBombCount])
 	    
 	    #Update cell number
 	    #Check for bomb in current cell
@@ -208,7 +201,7 @@ def my_fun(event,x,y,index):
 	isClickedList[index] = 1
 
     
-    
+print('Creating buttons')
 #Loop which creates all the tiles
 for i in range(numOfRows):
 	for j in range(numOfCols):
@@ -218,9 +211,10 @@ for i in range(numOfRows):
 		btn[btnNumber].bind('<Button-3>', lambda event, x=j,y=i,index=btnNumber:FlagClick(event,x,y,index))
 		btn[btnNumber].grid(row=i+1,column=j)
 		btnNumber = btnNumber + 1
+print('Buttons created')
 
 #Create a list of all the tiles. Take a random sample from that list to assign bombs to
-list_of_numbers = list(range(0, len(btn)))
+list_of_numbers = list(range(len(btn)))
 #First remove the start tile and it's surrounding tiles 
 btn[StartIndex].config(text="S")
 del list_of_numbers[StartIndex+numOfCols+1]
@@ -239,7 +233,5 @@ isBombList = random.sample(list_of_numbers,numOfBombs)
 isFlaggedList = [0] * len(btn)
 isClickedList = [0] * len(btn)
 recursiveCheckList = [0] * len(btn)
-
-
 
 root.mainloop()
